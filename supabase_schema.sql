@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   weight      NUMERIC,          -- kg
   age         INTEGER,
   description TEXT,
+  calorie_goal NUMERIC,
+  protein_goal NUMERIC,
+  fat_goal     NUMERIC,
   created_at  TIMESTAMPTZ DEFAULT now()
 );
 

@@ -5,6 +5,9 @@ const updateProfileSchema = z.object({
   weight: z.number().positive().optional(),
   age: z.number().int().positive().max(150).optional(),
   description: z.string().max(500).optional(),
+  calorie_goal: z.number().positive().optional(),
+  protein_goal: z.number().positive().optional(),
+  fat_goal: z.number().positive().optional(),
 });
 
 module.exports = { updateProfileSchema };

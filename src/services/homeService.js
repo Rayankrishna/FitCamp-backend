@@ -37,8 +37,27 @@ const getHomeSummary = async (userId) => {
     description: profile.description,
   };
 
+  // Calculate carb goal if calorie goal exists
+  let calorieGoal = profile.calorie_goal;
+  let proteinGoal = profile.protein_goal;
+  let fatGoal = profile.fat_goal;
+  let carbsGoal = null;
+
+  if (calorieGoal && proteinGoal !== null && fatGoal !== null) {
+    const proteinKcal = proteinGoal * 4;
+    const fatKcal = fatGoal * 9;
+    const carbsKcal = calorieGoal - proteinKcal - fatKcal;
+    carbsGoal = Math.round((carbsKcal / 4) * 100) / 100;
+  }
+
   return {
     personal_info: personalInfo,
+    goals: {
+      calorie_goal: calorieGoal || 'user data not filled',
+      protein_goal: proteinGoal || 'user data not filled',
+      fat_goal: fatGoal || 'user data not filled',
+      carbs_goal: carbsGoal || 'user data not filled',
+    },
     food_summary: {
       date: today,
       total_calories: dailyMacros.total_calories,

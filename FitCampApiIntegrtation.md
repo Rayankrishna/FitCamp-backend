@@ -158,7 +158,10 @@ Specific endpoint to set up profile data (height, weight, age). Typically used w
 {
   "height": 180,
   "weight": 75,
-  "age": 25
+  "age": 25,
+  "calorie_goal": 2500,
+  "protein_goal": 150,
+  "fat_goal": 70
 }
 ```
 
@@ -172,6 +175,9 @@ Specific endpoint to set up profile data (height, weight, age). Typically used w
     "height": 180,
     "weight": 75,
     "age": 25,
+    "calorie_goal": 2500,
+    "protein_goal": 150,
+    "fat_goal": 70,
     "description": "Fitness enthusiast",
     "created_at": "2026-04-06T06:00:00.000Z"
   }
@@ -199,6 +205,12 @@ Returns personal info, today's macro summary, and today's workout summary. If `h
       "weight": "user data not filled",
       "age": 25,
       "description": "Fitness enthusiast"
+    },
+    "goals": {
+      "calorie_goal": 2500,
+      "protein_goal": 150,
+      "fat_goal": 70,
+      "carbs_goal": 317.5
     },
     "food_summary": {
       "date": "2026-04-06",
