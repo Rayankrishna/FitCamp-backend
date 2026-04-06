@@ -10,4 +10,10 @@ const updateProfileSchema = z.object({
   fat_goal: z.number().positive().optional(),
 });
 
-module.exports = { updateProfileSchema };
+const updateGoalsSchema = z.object({
+  calorie_goal: z.number().positive(),
+  protein_goal: z.number().nonnegative(),
+  fat_goal: z.number().nonnegative(),
+});
+
+module.exports = { updateProfileSchema, updateGoalsSchema };

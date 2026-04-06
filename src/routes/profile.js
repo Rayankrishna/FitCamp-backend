@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const authenticate = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const { updateProfileSchema } = require('../validators/profileValidator');
+const { updateProfileSchema, updateGoalsSchema } = require('../validators/profileValidator');
 const profileController = require('../controllers/profileController');
 
 router.use(authenticate); // All profile routes are protected
@@ -9,5 +9,6 @@ router.use(authenticate); // All profile routes are protected
 router.get('/', profileController.getProfile);
 router.put('/', validate(updateProfileSchema), profileController.updateProfile);
 router.post('/setup', validate(updateProfileSchema), profileController.setupProfile);
+router.post('/goals', validate(updateGoalsSchema), profileController.updateGoals);
 
 module.exports = router;

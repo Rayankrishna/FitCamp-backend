@@ -151,17 +151,14 @@
 
 **Auth:** Bearer Token
 
-Specific endpoint to set up profile data (height, weight, age). Typically used when the user first logs in or when their data is empty.
+Specific endpoint to set up basic profile data (height, weight, age).
 
 **Request Body:**
 ```json
 {
   "height": 180,
   "weight": 75,
-  "age": 25,
-  "calorie_goal": 2500,
-  "protein_goal": 150,
-  "fat_goal": 70
+  "age": 25
 }
 ```
 
@@ -175,10 +172,38 @@ Specific endpoint to set up profile data (height, weight, age). Typically used w
     "height": 180,
     "weight": 75,
     "age": 25,
+    "description": "Fitness enthusiast",
+    "created_at": "2026-04-06T06:00:00.000Z"
+  }
+}
+```
+
+---
+
+### `POST /api/profile/goals`
+
+**Auth:** Bearer Token
+
+Dedicated endpoint to set up or update calorie and macro goals.
+
+**Request Body:**
+```json
+{
+  "calorie_goal": 2500,
+  "protein_goal": 150,
+  "fat_goal": 70
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
     "calorie_goal": 2500,
     "protein_goal": 150,
     "fat_goal": 70,
-    "description": "Fitness enthusiast",
     "created_at": "2026-04-06T06:00:00.000Z"
   }
 }
