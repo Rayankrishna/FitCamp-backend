@@ -8,5 +8,6 @@ router.use(authenticate); // All profile routes are protected
 
 router.get('/', profileController.getProfile);
 router.put('/', validate(updateProfileSchema), profileController.updateProfile);
+router.post('/setup', validate(updateProfileSchema), profileController.setupProfile);
 
 module.exports = router;

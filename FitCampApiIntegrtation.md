@@ -147,6 +147,39 @@
 
 ---
 
+### `POST /api/profile/setup`
+
+**Auth:** Bearer Token
+
+Specific endpoint to set up profile data (height, weight, age). Typically used when the user first logs in or when their data is empty.
+
+**Request Body:**
+```json
+{
+  "height": 180,
+  "weight": 75,
+  "age": 25
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "height": 180,
+    "weight": 75,
+    "age": 25,
+    "description": "Fitness enthusiast",
+    "created_at": "2026-04-06T06:00:00.000Z"
+  }
+}
+```
+
+---
+
 ## Home Summary
 
 ### `GET /api/home`
