@@ -1,6 +1,6 @@
 # FitCamp API Documentation
 
-**Base URL:** `http://localhost:3000/api`
+**Base URL:** `https://fit-camp-backend.vercel.app/api`
 
 ---
 
