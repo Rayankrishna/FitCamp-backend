@@ -36,7 +36,8 @@ const login = async (email, password) => {
     email,
     password,
   });
-
+  console.log("data gikoneigneogin ", data);
+  console.log("error gikoneigneogin", error);
   if (error) {
     throw new AppError(error.message, 401);
   }

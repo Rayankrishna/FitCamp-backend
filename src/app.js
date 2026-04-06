@@ -27,7 +27,7 @@ app.use(express.json());
 // Health check
 // ---------------------------------------------------------------------------
 app.get('/api/health', (_req, res) => {
-  res.json({ success: true, message: 'FitCamp API is running 🏋️' });
+  res.json({ success: true, message: 'FitCamp API is running ' });
 });
 
 // ---------------------------------------------------------------------------
