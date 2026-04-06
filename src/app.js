@@ -12,6 +12,7 @@ const profileRoutes = require('./routes/profile');
 const foodRoutes = require('./routes/food');
 const workoutRoutes = require('./routes/workout');
 const aiRoutes = require('./routes/ai');
+const homeRoutes = require('./routes/home');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/food', foodRoutes);
 app.use('/api/workout', workoutRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/home', homeRoutes);
 
 // ---------------------------------------------------------------------------
 // 404 handler

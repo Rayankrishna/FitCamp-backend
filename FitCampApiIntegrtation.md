@@ -147,6 +147,47 @@
 
 ---
 
+## Home Summary
+
+### `GET /api/home`
+
+**Auth:** Bearer Token
+
+Returns personal info, today's macro summary, and today's workout summary. If `height` or `weight` is null in the profile, it returns `"user data not filled"`.
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "personal_info": {
+      "email": "user@example.com",
+      "height": 180,
+      "weight": "user data not filled",
+      "age": 25,
+      "description": "Fitness enthusiast"
+    },
+    "food_summary": {
+      "date": "2026-04-06",
+      "total_calories": 850.5,
+      "total_protein": 45.2,
+      "total_carbs": 102.3,
+      "total_fat": 28.7,
+      "item_count": 2
+    },
+    "workout_summary": {
+      "date": "2026-04-06",
+      "workouts": [
+        { "id": "uuid", "name": "Leg Day" }
+      ],
+      "count": 1
+    }
+  }
+}
+```
+
+---
+
 ## Food Tracker
 
 ### `GET /api/food/:barcode`
