@@ -7,7 +7,7 @@ const { AppError } = require('../middleware/errorHandler');
 const getProfile = async (userId) => {
   const { data, error } = await supabaseAdmin
     .from('profiles')
-    .select('id, email, height, weight, age, description, created_at')
+    .select('id, email, height, weight, age, description, calorie_goal, protein_goal, fat_goal, created_at')
     .eq('id', userId)
     .single();
 
