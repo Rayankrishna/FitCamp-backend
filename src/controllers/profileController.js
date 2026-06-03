@@ -20,8 +20,14 @@ const updateProfile = async (req, res, next) => {
 
 const setupProfile = async (req, res, next) => {
   try {
-    const { height, weight, age } = req.body;
-    const profile = await profileService.updateProfile(req.user.id, { height, weight, age });
+    const { height, weight, age, activity_level, diet_goal } = req.body;
+    const profile = await profileService.updateProfile(req.user.id, {
+      height,
+      weight,
+      age,
+      activity_level,
+      diet_goal,
+    });
     res.json({ success: true, data: profile });
   } catch (err) {
     next(err);

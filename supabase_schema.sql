@@ -169,3 +169,82 @@ CREATE POLICY "Users can manage own sets"
 CREATE POLICY "Service role can insert sets"
   ON sets FOR INSERT
   WITH CHECK (true);
+
+-- ============================================================================
+-- FitCamp Upgrades — Onboarding, Splits/Programs, Calendar, and Overload
+-- ============================================================================
+
+-- 1. Onboarding Fields
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS activity_level TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS diet_goal TEXT;
+
+-- 2. Programs / Splits
+CREATE TABLE IF NOT EXISTS programs (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name        TEXT NOT NULL,
+  description TEXT,
+  is_active   BOOLEAN DEFAULT true,
+  created_at  TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE programs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own programs"
+  ON programs FOR ALL
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Service role can insert programs"
+  ON programs FOR INSERT
+  WITH CHECK (true);
+
+-- 3. Workout Templates
+CREATE TABLE IF NOT EXISTS workout_templates (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+  name       TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE workout_templates ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own workout templates"
+  ON workout_templates FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM programs WHERE programs.id = workout_templates.program_id AND programs.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Service role can insert workout templates"
+  ON workout_templates FOR INSERT
+  WITH CHECK (true);
+
+-- 4. Template Exercises
+CREATE TABLE IF NOT EXISTS workout_template_exercises (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workout_template_id UUID NOT NULL REFERENCES workout_templates(id) ON DELETE CASCADE,
+  exercise_id         UUID NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
+  sequence_order      INTEGER DEFAULT 0,
+  UNIQUE (workout_template_id, exercise_id)
+);
+
+ALTER TABLE workout_template_exercises ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own workout template exercises"
+  ON workout_template_exercises FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM workout_templates
+      JOIN programs ON programs.id = workout_templates.program_id
+      WHERE workout_templates.id = workout_template_exercises.workout_template_id AND programs.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Service role can insert workout template exercises"
+  ON workout_template_exercises FOR INSERT
+  WITH CHECK (true);
+
+-- 5. Link workouts to templates
+ALTER TABLE workouts ADD COLUMN IF NOT EXISTS template_id UUID REFERENCES workout_templates(id) ON DELETE SET NULL;
+

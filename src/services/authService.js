@@ -4,7 +4,7 @@ const { AppError } = require('../middleware/errorHandler');
 /**
  * Register a new user via Supabase Auth and create a profile row.
  */
-const register = async (email, password) => {
+const register = async (email, password, onboardingData = {}) => {
   const { data, error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
@@ -15,7 +15,15 @@ const register = async (email, password) => {
   const userId = data.user.id;
   const { error: profileError } = await supabaseAdmin
     .from('profiles')
-    .insert({ id: userId, email });
+    .insert({
+      id: userId,
+      email,
+      height: onboardingData.height,
+      weight: onboardingData.weight,
+      age: onboardingData.age,
+      activity_level: onboardingData.activity_level,
+      diet_goal: onboardingData.diet_goal,
+    });
 
   if (profileError) {
     console.error('[AUTH] Profile creation failed:', profileError.message);

@@ -25,16 +25,34 @@ const getSuggestions = async (userId) => {
     .gte('date', sevenDaysAgo.toISOString().split('T')[0])
     .order('date', { ascending: false });
 
-  // 4. Calculate targets using Mifflin-St Jeor (placeholder defaults)
+  // 4. Calculate targets using Mifflin-St Jeor
   const weight = profile.weight || 70;
   const height = profile.height || 170;
   const age = profile.age || 25;
 
-  // BMR estimation (using male formula as default; a gender field could improve this)
+  // BMR estimation (using male formula as default)
   const bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-  const activityMultiplier = 1.55; // moderate activity
-  const tdee = Math.round(bmr * activityMultiplier);
-  const proteinTarget = Math.round(weight * 2); // 2g per kg bodyweight
+
+  // Dynamic Activity Multiplier
+  let activityMultiplier = 1.55;
+  if (profile.activity_level === 'sedentary') activityMultiplier = 1.2;
+  else if (profile.activity_level === 'lightly_active') activityMultiplier = 1.375;
+  else if (profile.activity_level === 'moderately_active') activityMultiplier = 1.55;
+  else if (profile.activity_level === 'active') activityMultiplier = 1.725;
+  else if (profile.activity_level === 'very_active') activityMultiplier = 1.9;
+
+  let tdee = Math.round(bmr * activityMultiplier);
+
+  // Dynamic Calorie Adjustment based on Diet Goal
+  if (profile.diet_goal === 'lose_weight') {
+    tdee = Math.max(1200, tdee - 500); // Prevent calorie target from dropping dangerously low
+  } else if (profile.diet_goal === 'gain_weight' || profile.diet_goal === 'clean_bulk') {
+    tdee += 300;
+  }
+
+  // Dynamic Protein Target
+  const proteinMultiplier = (profile.diet_goal === 'lose_weight' || profile.diet_goal === 'clean_bulk') ? 2.2 : 2.0;
+  const proteinTarget = Math.round(weight * proteinMultiplier);
 
   // 5. Build response
   return {

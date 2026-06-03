@@ -8,6 +8,8 @@ const updateProfileSchema = z.object({
   calorie_goal: z.number().positive().optional(),
   protein_goal: z.number().positive().optional(),
   fat_goal: z.number().positive().optional(),
+  activity_level: z.enum(['sedentary', 'lightly_active', 'moderately_active', 'active', 'very_active']).optional(),
+  diet_goal: z.enum(['lose_weight', 'maintain', 'gain_weight', 'clean_bulk']).optional(),
 });
 
 const updateGoalsSchema = z.object({
