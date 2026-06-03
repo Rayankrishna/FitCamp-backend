@@ -38,4 +38,14 @@ const createFood = async (req, res, next) => {
   }
 };
 
-module.exports = { getByBarcode, createMeal, getDailyMacros, createFood };
+const searchFood = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const results = await foodService.searchFood(q);
+    res.json({ success: true, data: results });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getByBarcode, createMeal, getDailyMacros, createFood, searchFood };

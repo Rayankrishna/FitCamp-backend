@@ -46,6 +46,33 @@ Used if a user skips onboarding on register or updates their stats later.
 
 ---
 
+### 🍎 Food Search API
+
+#### `GET /api/food/search?q=query`
+Allows free-text searching of food items and their macros. It searches the local database cache first, then queries the Open Food Facts search API in parallel, returning combined and deduplicated results.
+* **Query Parameters:**
+  * `q` (string, required) - The search term (e.g. `q=chicken`, `q=milk`).
+* **Response (200):**
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": "uuid-or-null",
+        "barcode": "common_rice_white",
+        "name": "Cooked White Rice",
+        "protein": 2.7,
+        "carbs": 28.0,
+        "fat": 0.3,
+        "fiber": 0.4,
+        "calories": 130.0
+      }
+    ]
+  }
+  ```
+
+---
+
 ### 🏋️ Splits, Programs & Template APIs
 
 #### `POST /api/workout/programs` (Create a split program)

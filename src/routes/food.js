@@ -6,8 +6,12 @@ const {
   createMealSchema,
   dailyQuerySchema,
   createFoodSchema,
+  searchQuerySchema,
 } = require('../validators/foodValidator');
 const foodController = require('../controllers/foodController');
+
+// Food search from local cache + Open Food Facts
+router.get('/search', validate(searchQuerySchema, 'query'), foodController.searchFood);
 
 // Barcode lookup is public (useful for scanning before logging in)
 router.get('/:barcode', validate(barcodeParamSchema, 'params'), foodController.getByBarcode);

@@ -194,8 +194,71 @@ const createFood = async (foodData) => {
   return data;
 };
 
+/**
+ * Search foods from local database and Open Food Facts.
+ */
+const searchFood = async (query) => {
+  // 1. Search local DB cache
+  const { data: localResults, error: localError } = await supabaseAdmin
+    .from('foods')
+    .select('*')
+    .ilike('name', `%${query}%`)
+    .limit(20);
+
+  if (localError) {
+    console.error('[FOOD] Local search failed:', localError.message);
+  }
+
+  const results = localResults || [];
+
+  // 2. Fetch from Open Food Facts search API
+  try {
+    const searchUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20`;
+    const response = await fetch(searchUrl, {
+      headers: {
+        'User-Agent': 'FitCamp - WebBackend - 1.0 - https://fit-camp-backend.vercel.app'
+      }
+    });
+
+    if (response.ok) {
+      const json = await response.json();
+      const products = json.products || [];
+
+      const parsedOff = products.map((p) => {
+        const nutrients = p.nutriments || {};
+        return {
+          id: null,
+          barcode: p.code || null,
+          name: p.product_name || p.product_name_en || 'Unknown',
+          protein: round(nutrients['proteins_100g'] || 0),
+          carbs: round(nutrients['carbohydrates_100g'] || 0),
+          fat: round(nutrients['fat_100g'] || 0),
+          fiber: round(nutrients['fiber_100g'] || 0),
+          calories: round(nutrients['energy-kcal_100g'] || 0),
+        };
+      });
+
+      // 3. Combine results, prioritizing local database and avoiding duplicates
+      const seenBarcodes = new Set(results.map((r) => r.barcode).filter(Boolean));
+      const seenNames = new Set(results.map((r) => r.name.toLowerCase()));
+
+      for (const item of parsedOff) {
+        if (item.barcode && seenBarcodes.has(item.barcode)) continue;
+        if (seenNames.has(item.name.toLowerCase())) continue;
+        results.push(item);
+        if (item.barcode) seenBarcodes.add(item.barcode);
+        seenNames.add(item.name.toLowerCase());
+      }
+    }
+  } catch (err) {
+    console.error('[FOOD] Open Food Facts search failed:', err.message);
+  }
+
+  return results;
+};
+
 function round(val) {
   return Math.round(val * 100) / 100;
 }
 
-module.exports = { getByBarcode, createMeal, getDailyMacros, createFood };
+module.exports = { getByBarcode, createMeal, getDailyMacros, createFood, searchFood };
