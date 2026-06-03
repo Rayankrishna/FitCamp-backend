@@ -29,4 +29,13 @@ const getDailyMacros = async (req, res, next) => {
   }
 };
 
-module.exports = { getByBarcode, createMeal, getDailyMacros };
+const createFood = async (req, res, next) => {
+  try {
+    const food = await foodService.createFood(req.body);
+    res.status(201).json({ success: true, data: food });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getByBarcode, createMeal, getDailyMacros, createFood };

@@ -167,8 +167,35 @@ const getDailyMacros = async (userId, date) => {
   };
 };
 
+/**
+ * Create a custom food item in the DB.
+ */
+const createFood = async (foodData) => {
+  const food = {
+    barcode: foodData.barcode || null,
+    name: foodData.name,
+    protein: round(foodData.protein || 0),
+    carbs: round(foodData.carbs || 0),
+    fat: round(foodData.fat || 0),
+    fiber: round(foodData.fiber || 0),
+    calories: round(foodData.calories || 0),
+  };
+
+  const { data, error } = await supabaseAdmin
+    .from('foods')
+    .insert(food)
+    .select()
+    .single();
+
+  if (error) {
+    throw new AppError(error.message, 400);
+  }
+
+  return data;
+};
+
 function round(val) {
   return Math.round(val * 100) / 100;
 }
 
-module.exports = { getByBarcode, createMeal, getDailyMacros };
+module.exports = { getByBarcode, createMeal, getDailyMacros, createFood };

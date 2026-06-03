@@ -23,4 +23,14 @@ const dailyQuerySchema = z.object({
     .optional(),
 });
 
-module.exports = { barcodeParamSchema, createMealSchema, dailyQuerySchema };
+const createFoodSchema = z.object({
+  barcode: z.string().optional(),
+  name: z.string().min(1, 'Name is required'),
+  protein: z.number().nonnegative().optional(),
+  carbs: z.number().nonnegative().optional(),
+  fat: z.number().nonnegative().optional(),
+  fiber: z.number().nonnegative().optional(),
+  calories: z.number().nonnegative().optional(),
+});
+
+module.exports = { barcodeParamSchema, createMealSchema, dailyQuerySchema, createFoodSchema };
